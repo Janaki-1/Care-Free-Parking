@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - Smart Parking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Smart Parking</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto" id="navLinks"></ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="text-center">My Account</h2>
+    <div class="mx-auto mt-4" style="max-width: 600px;">
+      <p><strong>Name:</strong> <span id="userName"></span></p>
+      <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+      <h4 class="mt-4">Booking History</h4>
+      <ul id="bookingHistory" class="list-group mt-2"></ul>
+
+      <button onclick="logout()" class="btn btn-danger mt-4">Logout</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if(!user){
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("userName").innerText = user.name;
+      document.getElementById("userEmail").innerText = user.email;
+
+      // Display booking history
+      const bookings = JSON.parse(localStorage.getItem("bookings") || "{}");
+      const userBookings = bookings[user.email] || [];
+      const historyList = document.getElementById("bookingHistory");
+
+      if(userBookings.length === 0){
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = "No bookings yet.";
+        historyList.appendChild(li);
+      } else {
+        userBookings.forEach(b => {
+          const li = document.createElement("li");
+          li.className = "list-group-item d-flex justify-content-between";
+          li.innerHTML = <span>${b.spot}</span><small>${b.date}</small>;
+          historyList.appendChild(li);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
